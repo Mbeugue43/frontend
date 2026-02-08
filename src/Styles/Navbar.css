@@ -1,0 +1,124 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  transition: all 0.3s ease;
+  padding: 1rem 0;
+}
+
+.navbar-scrolled {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-links {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nav-link {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.btn-login, .btn-register {
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 12px !important;
+}
+
+.btn-login {
+  background: #3b82f6;
+  color: white !important;
+}
+
+.btn-login:hover {
+  background: #2563eb !important;
+}
+
+.btn-register {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white !important;
+}
+
+.btn-register:hover {
+  background: linear-gradient(135deg, #059669, #047857) !important;
+}
+
+.navbar-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.navbar-mobile {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar-links {
+    display: none;
+  }
+  
+  .navbar-toggle {
+    display: block;
+  }
+  
+  .navbar-mobile {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .navbar-mobile button,
+  .navbar-mobile a {
+    display: block;
+    width: 100%;
+    padding: 1rem 2rem;
+    text-align: left;
+    border: none;
+    background: none;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .navbar-mobile button:hover,
+  .navbar-mobile a:hover {
+    background: rgba(59, 130, 246, 0.1);
+  }
+}

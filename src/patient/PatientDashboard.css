@@ -1,0 +1,30 @@
+.patient-dashboard {
+  padding: 20px;
+}
+
+.patient-dashboard h2 {
+  margin-bottom: 20px;
+}
+
+.patient-info, .patient-rendezvous {
+  margin-bottom: 30px;
+}
+
+.patient-dashboard table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.patient-dashboard th, .patient-dashboard td {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.patient-dashboard th {
+  background-color: #f4f4f4;
+}
+
+.patient-dashboard button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
