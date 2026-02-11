@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as api from "../api/endpoint";
+import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);

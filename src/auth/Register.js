@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { postData } from '../api/endpoint';
 
 const Register = () => {
@@ -10,32 +10,31 @@ const Register = () => {
     role: "Patient"
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
     try {
-      await postData('/auth/register', formData);
-      alert("Inscription réussie ! Veuillez vous connecter.");
+      const data = await postData('/auth/register', formData);
+      alert(data.message || "Inscription réussie ! Veuillez vous connecter.");
       navigate('/login');
-    } catch (error) {
-      console.error("Erreur lors de l'inscription:", error);
-      alert(error.message || "Erreur lors de l'inscription");
+    } catch (err) {
+      console.error("Erreur lors de l'inscription:", err);
+      setError(err.message || "Erreur lors de l'inscription");
     } finally {
       setLoading(false);
     }
   };
 
-  // ✅ Style identique conservé
   return (
     <div style={{
       minHeight: '100vh',
@@ -48,16 +47,38 @@ const Register = () => {
       <div style={{
         backgroundColor: 'white',
         padding: '40px',
-        borderRadius: '8px',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+        borderRadius: '12px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
         width: '100%',
         maxWidth: '400px'
       }}>
-        <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Inscription</h1>
-        
+        <h2 style={{ 
+          textAlign: 'center', 
+          marginBottom: '30px', 
+          color: '#0b3c5d', 
+          fontSize: '28px', 
+          fontWeight: 'bold' 
+        }}>
+          Inscription
+        </h2>
+
+        {error && (
+          <div style={{
+            backgroundColor: '#fee',
+            color: '#c33',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            border: '1px solid #fcc',
+            fontSize: '14px'
+          }}>
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: '15px' }}>
-            <input 
+            <input
               type="text"
               name="fullName"
               placeholder="Nom complet"
@@ -69,15 +90,16 @@ const Register = () => {
                 width: '100%',
                 padding: '12px',
                 border: '1px solid #ddd',
-                borderRadius: '4px',
+                borderRadius: '8px',
                 fontSize: '16px',
-                boxSizing: 'border-box'
+                boxSizing: 'border-box',
+                backgroundColor: loading ? '#f9f9f9' : 'white'
               }}
             />
           </div>
-          
+
           <div style={{ marginBottom: '15px' }}>
-            <input 
+            <input
               type="email"
               name="email"
               placeholder="email@exemple.com"
@@ -89,15 +111,16 @@ const Register = () => {
                 width: '100%',
                 padding: '12px',
                 border: '1px solid #ddd',
-                borderRadius: '4px',
+                borderRadius: '8px',
                 fontSize: '16px',
-                boxSizing: 'border-box'
+                boxSizing: 'border-box',
+                backgroundColor: loading ? '#f9f9f9' : 'white'
               }}
             />
           </div>
-          
+
           <div style={{ marginBottom: '15px' }}>
-            <input 
+            <input
               type="password"
               name="password"
               placeholder="Mot de passe"
@@ -110,16 +133,17 @@ const Register = () => {
                 width: '100%',
                 padding: '12px',
                 border: '1px solid #ddd',
-                borderRadius: '4px',
+                borderRadius: '8px',
                 fontSize: '16px',
-                boxSizing: 'border-box'
+                boxSizing: 'border-box',
+                backgroundColor: loading ? '#f9f9f9' : 'white'
               }}
             />
           </div>
-          
-          <div style={{ marginBottom: '15px' }}>
-            <select 
-              name="role" 
+
+          <div style={{ marginBottom: '20px' }}>
+            <select
+              name="role"
               value={formData.role}
               onChange={handleChange}
               disabled={loading}
@@ -127,9 +151,10 @@ const Register = () => {
                 width: '100%',
                 padding: '12px',
                 border: '1px solid #ddd',
-                borderRadius: '4px',
+                borderRadius: '8px',
                 fontSize: '16px',
-                boxSizing: 'border-box'
+                boxSizing: 'border-box',
+                backgroundColor: loading ? '#f9f9f9' : 'white'
               }}
             >
               <option value="Patient">Patient</option>
@@ -144,31 +169,31 @@ const Register = () => {
               <option value="SuperAdmin">Super Administrateur</option>
             </select>
           </div>
-          
-          <button 
+
+          <button
             type="submit"
             disabled={loading}
             style={{
               width: '100%',
-              padding: '12px',
+              padding: '15px',
               backgroundColor: loading ? '#ccc' : '#0b3c5d',
               color: 'white',
               border: 'none',
-              borderRadius: '4px',
+              borderRadius: '8px',
               fontSize: '16px',
               fontWeight: 'bold',
               cursor: loading ? 'not-allowed' : 'pointer',
-              marginBottom: '15px'
+              transition: 'all 0.2s'
             }}
           >
-            {loading ? 'Inscription...' : 'S\'inscrire'}
+            {loading ? 'Inscription...' : "S'inscrire"}
           </button>
         </form>
-        
-        <div style={{ textAlign: 'center' }}>
-          <a href="/login" style={{ color: '#0b3c5d', textDecoration: 'none' }}>
+
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          <Link to="/login" style={{ color: '#0b3c5d', textDecoration: 'none', fontWeight: '500' }}>
             Déjà inscrit ? Connexion
-          </a>
+          </Link>
         </div>
       </div>
     </div>

@@ -1,0 +1,84 @@
+/* Container principal */
+.PatientDashboard {
+  max-width: 800px;
+  margin: 60px auto 40px auto; /* plus d'espace en haut */
+  padding: 30px 20px;
+  background-color: #f0fdf4; /* fond doux vert clair */
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Titre principal */
+.PatientDashboard h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #111827;
+  text-align: center;
+}
+
+/* Container des liens */
+.PatientDashboard-links {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 300px;
+  margin: 0 auto; /* centré */
+}
+
+/* Boutons génériques */
+.PatientDashboard-links .btn {
+  display: block;
+  padding: 14px;
+  text-align: center;
+  font-weight: 600;
+  border-radius: 8px;
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.2s, transform 0.15s, box-shadow 0.15s;
+}
+
+/* Bouton bleu (Mes dossiers) */
+.PatientDashboard-links .btn-primary {
+  background-color: #10b981; /* vert accent */
+}
+
+.PatientDashboard-links .btn-primary:hover {
+  background-color: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Bouton rouge (Déconnexion) */
+.PatientDashboard-links .btn-danger {
+  background-color: #ef4444; /* rouge */
+}
+
+.PatientDashboard-links .btn-danger:hover {
+  background-color: #b91c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Zone des routes enfants */
+.PatientDashboard-content {
+  margin-top: 50px;
+  color: #374151;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .PatientDashboard {
+    margin: 40px 15px 30px 15px;
+    padding: 20px 15px;
+  }
+
+  .PatientDashboard-links {
+    max-width: 100%;
+  }
+}

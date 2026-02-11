@@ -3,12 +3,11 @@ import { useLocation, Link } from 'react-router-dom';
 import { FiMail, FiPhone, FiMapPin, FiFacebook, FiTwitter, FiLinkedin, FiInstagram } from 'react-icons/fi';
 import '../Styles/Footer.css';
 
-// Pied de page
-function Footer() {
+const Footer = () => {
   const location = useLocation();
 
-  // Ne pas afficher le footer sur les pages admin
-  if (location.pathname.startsWith('/admin')) {
+  // Masquer le footer sur les pages admin
+  if (location.pathname.startsWith('/admin') || location.pathname.startsWith('/superadmin')) {
     return null;
   }
 
@@ -16,29 +15,23 @@ function Footer() {
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-content">
+          {/* Section logo et description */}
           <div className="footer-section">
             <h3 className="footer-logo">GovAimed Sanitaire</h3>
             <p className="footer-description">
               Votre partenaire de confiance pour la gestion sanitaire moderne et sécurisée.
             </p>
             <div className="social-links">
-              <a href="#" aria-label="Facebook" className="social-link">
-                <FiFacebook size={20} />
-              </a>
-              <a href="#" aria-label="Twitter" className="social-link">
-                <FiTwitter size={20} />
-              </a>
-              <a href="#" aria-label="LinkedIn" className="social-link">
-                <FiLinkedin size={20} />
-              </a>
-              <a href="#" aria-label="Instagram" className="social-link">
-                <FiInstagram size={20} />
-              </a>
+              <a href="#" aria-label="Facebook" className="social-link"><FiFacebook size={20} /></a>
+              <a href="#" aria-label="Twitter" className="social-link"><FiTwitter size={20} /></a>
+              <a href="#" aria-label="LinkedIn" className="social-link"><FiLinkedin size={20} /></a>
+              <a href="#" aria-label="Instagram" className="social-link"><FiInstagram size={20} /></a>
             </div>
           </div>
 
+          {/* Liens rapides */}
           <div className="footer-section">
-            <h4>Liens Rapides</h4>
+            <h4>Liens rapides</h4>
             <ul className="footer-links">
               <li><Link to="/">Accueil</Link></li>
               <li><a href="#services">Fonctionnalités</a></li>
@@ -47,6 +40,7 @@ function Footer() {
             </ul>
           </div>
 
+          {/* Services */}
           <div className="footer-section">
             <h4>Services</h4>
             <ul className="footer-links">
@@ -57,6 +51,7 @@ function Footer() {
             </ul>
           </div>
 
+          {/* Contact */}
           <div className="footer-section">
             <h4>Contact</h4>
             <ul className="footer-contact">
@@ -76,6 +71,7 @@ function Footer() {
           </div>
         </div>
 
+        {/* Bas du footer */}
         <div className="footer-bottom">
           <p>&copy; 2024 GovAimed Sanitaire. Tous droits réservés.</p>
           <div className="footer-legal">
@@ -89,6 +85,6 @@ function Footer() {
       </div>
     </footer>
   );
-}
+};
 
 export default Footer;

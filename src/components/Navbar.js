@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, useLocation, Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { FiX, FiMenu } from 'react-icons/fi';
 import '../Styles/Navbar.css';
 
@@ -8,85 +8,45 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // ✅ TOUS les hooks AU DÉBUT du composant (AVANT tout early return)
+  // 🔹 Hooks au début
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Fonction de scroll fluide vers les sections
+  // 🔹 Scroll fluide vers les sections
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
+    if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     setIsMenuOpen(false);
   };
 
-  // Early return APRÈS tous les hooks
-  if (location.pathname === '/login' || location.pathname === '/register' || location.pathname.startsWith('/admin')) {
+  // 🔹 Ne pas afficher la navbar sur certaines pages
+  if (
+    location.pathname === '/login' || 
+    location.pathname === '/register' || 
+    location.pathname.startsWith('/admin')
+  ) {
     return null;
   }
 
   return (
     <nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`}>
       <div className="navbar-container">
+        {/* Logo ou texte simple */}
         <div className="navbar-logo">
-          <Link to="/" className="logo">
-            Govaimed Sanitaire
-          </Link>
+          <span className="logo">Plateforme Sanitaire</span>
         </div>
 
         {/* Menu Desktop */}
         <ul className="navbar-links">
-          <li>
-            <button 
-              className="nav-link" 
-              onClick={() => scrollToSection('home')}
-            >
-              Accueil
-            </button>
-          </li>
-          <li>
-            <button 
-              className="nav-link" 
-              onClick={() => scrollToSection('services')}
-            >
-              Fonctionnalités
-            </button>
-          </li>
-          <li>
-            <button 
-              className="nav-link" 
-              onClick={() => scrollToSection('about')}
-            >
-              Sécurité
-            </button>
-          </li>
-          <li>
-            <button 
-              className="nav-link" 
-              onClick={() => scrollToSection('contact')}
-            >
-              Contact
-            </button>
-          </li>
-          <li>
-            <Link to="/login" className="nav-link btn-login">
-              Connexion
-            </Link>
-          </li>
-          <li>
-            <Link to="/register" className="nav-link btn-register">
-              S'inscrire
-            </Link>
-          </li>
+          <li><button className="nav-link" onClick={() => scrollToSection('home')}>Accueil</button></li>
+          <li><button className="nav-link" onClick={() => scrollToSection('services')}>Fonctionnalités</button></li>
+          <li><button className="nav-link" onClick={() => scrollToSection('about')}>Sécurité</button></li>
+          <li><button className="nav-link" onClick={() => scrollToSection('contact')}>Contact</button></li>
+          <li><Link to="/login" className="nav-link btn-login">Connexion</Link></li>
+          <li><Link to="/register" className="nav-link btn-register">S'inscrire</Link></li>
         </ul>
 
         {/* Menu Mobile Toggle */}

@@ -1,23 +1,44 @@
+// src/api/endpoint.js
+import axios from "axios";
+
+// =================== BASE URL ===================
 const BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api";
 
 // =================== TOKEN MANAGEMENT ===================
-export const TOKEN_KEY = "token"; // ✅ Cohérent partout
+const TOKEN_KEY = "token";
 
 export const getAuthToken = () => localStorage.getItem(TOKEN_KEY);
 export const setAuthToken = (token) => localStorage.setItem(TOKEN_KEY, token);
 export const removeAuthToken = () => localStorage.removeItem(TOKEN_KEY);
 
+// =================== AXIOS INSTANCE ===================
+export const axiosInstance = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    "Content-Type": "application/json"
+  }
+});
+
+// Ajouter le token automatiquement à chaque requête
+axiosInstance.interceptors.request.use((config) => {
+  const token = getAuthToken();
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+}, (error) => Promise.reject(error));
+
+// =================== DECODE JWT ===================
 export const decodeToken = (token) => {
   if (!token) return null;
   try {
-    const base64 = token.split('.')[1];
-    const json = decodeURIComponent(
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
       atob(base64)
         .split('')
         .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
         .join('')
     );
-    return JSON.parse(json);
+    return JSON.parse(jsonPayload);
   } catch {
     return null;
   }
@@ -25,141 +46,87 @@ export const decodeToken = (token) => {
 
 export const isTokenValid = (token) => {
   if (!token) return false;
-  try {
-    const decoded = decodeToken(token);
-    if (!decoded || !decoded.exp) return false;
-    return decoded.exp * 1000 > Date.now();
-  } catch {
-    return false;
-  }
+  const decoded = decodeToken(token);
+  return decoded && decoded.exp * 1000 > Date.now();
 };
 
-// =================== HELPERS ===================
-const buildUrl = (endpoint) => {
-  return endpoint.startsWith('/') ? `${BASE_URL}${endpoint}` : `${BASE_URL}/${endpoint}`;
-};
+// =================== ERROR HANDLER ===================
+export const handleApiError = (error) => {
+  if (!error.response) return new Error("Erreur réseau ou serveur indisponible");
 
-const getHeaders = (extraHeaders = {}) => {
-  const token = getAuthToken();
-  const headers = {
-    'Content-Type': 'application/json',
-    ...extraHeaders
-  };
-  
-  if (token && isTokenValid(token)) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-  
-  return headers;
-};
+  const { status, data } = error.response;
 
-// =================== GESTION DES ERREURS CENTRALE ===================
-const handleApiError = async (response) => {
-  if (response.status === 401) {
+  if (status === 401) {
     removeAuthToken();
-    if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
-      window.location.href = '/login';
-    }
-    throw new Error('Session expirée. Veuillez vous reconnecter.');
+    window.location.href = "/login";
+    return new Error("Session expirée. Redirection vers login...");
   }
 
-  let errorData;
-  try {
-    errorData = await response.json();
-  } catch {
-    errorData = { message: `Erreur HTTP ${response.status}` };
+  if (status === 403) return new Error(data.message || "🔒 Accès refusé");
+  if (status === 404) return new Error("📁 Endpoint non trouvé");
+
+  // MongoDB doublon
+  if (data?.errorName === 'MongoServerError' && data.code === 11000) {
+    return new Error("⚠️ Données en doublon");
   }
 
-  console.error("Détails de l'erreur serveur:", errorData);
+  // Validation errors
+  if (data?.validationErrors) {
+    const errors = Object.values(data.validationErrors)
+      .map(err => err.message)
+      .join("; ");
+    return new Error(`Validation: ${errors}`);
+  }
 
-  let errorMessage = errorData.message || `Erreur ${response.status}`;
-  
-  if (errorData.errorName === 'MongoServerError' && errorData.code === 11000) {
-    errorMessage = 'Données en doublon détectées. Vérifiez les informations saisies.';
-  }
-  
-  if (errorData.validationErrors) {
-    const validationMessages = Object.values(errorData.validationErrors).flat().join(', ');
-    errorMessage += ` - Validation: ${validationMessages}`;
-  }
-  
-  throw new Error(errorMessage);
+  return new Error(data?.message || `Erreur ${status}`);
 };
 
 // =================== API METHODS ===================
-export const getData = async (endpoint) => {
+export const getData = async (endpoint, params = {}) => {
   try {
-    const url = buildUrl(endpoint);
-    const response = await fetch(url, { headers: getHeaders() });
-    
-    if (!response.ok) {
-      throw await handleApiError(response);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    throw error;
+    const res = await axiosInstance.get(endpoint, { params });
+    return res.data;
+  } catch (err) {
+    throw handleApiError(err);
   }
 };
 
 export const postData = async (endpoint, payload) => {
   try {
-    const url = buildUrl(endpoint);
-    const response = await fetch(url, {
-      method: "POST",
-      headers: getHeaders(),
-      body: JSON.stringify(payload),
-    });
-    
-    if (!response.ok) {
-      throw await handleApiError(response);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error("Error posting data:", error);
-    throw error;
+    const res = await axiosInstance.post(endpoint, payload);
+    return res.data;
+  } catch (err) {
+    throw handleApiError(err);
   }
 };
 
 export const putData = async (endpoint, payload) => {
   try {
-    const url = buildUrl(endpoint);
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: getHeaders(),
-      body: JSON.stringify(payload),
-    });
-    
-    if (!response.ok) {
-      throw await handleApiError(response);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error("Error updating data:", error);
-    throw error;
+    const res = await axiosInstance.put(endpoint, payload);
+    return res.data;
+  } catch (err) {
+    throw handleApiError(err);
   }
 };
 
 export const deleteData = async (endpoint) => {
   try {
-    const url = buildUrl(endpoint);
-    const response = await fetch(url, {
-      method: "DELETE",
-      headers: getHeaders(),
-    });
-    
-    if (!response.ok) {
-      throw await handleApiError(response);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error("Error deleting data:", error);
-    throw error;
+    const res = await axiosInstance.delete(endpoint);
+    return res.data;
+  } catch (err) {
+    throw handleApiError(err);
   }
 };
 
-export default { getData, postData, putData, deleteData, getAuthToken, setAuthToken, removeAuthToken, isTokenValid, decodeToken };
+// =================== EXPORT DEFAULT ===================
+export default {
+  getAuthToken,
+  setAuthToken,
+  removeAuthToken,
+  decodeToken,
+  isTokenValid,
+  getData,
+  postData,
+  putData,
+  deleteData
+};

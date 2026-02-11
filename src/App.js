@@ -6,9 +6,11 @@ import Home from './components/Home';
 import Login from './auth/Login';
 import Register from './auth/Register';
 import AdminDashboard from './admin/AdminDashboard';
-import DoctorDashboard from './doctor/DoctorDashboard';
-import PatientDashboard from './patient/PatientDashboard';
-import MyDossiers from './components/MyDossiers'; 
+import MedecinDashboard from './pages/MedecinDashboard';
+import CreateDossier from './pages/CreateDossier';
+import MesDossiers from './pages/MesDossiers';
+import PatientDashboard from './pages/Composants/PatientDashboard';
+import MyDossiers from './pages/Composants/MyDossiers';
 import PrivateRoute from './auth/PrivateRoute';
 
 function App() {
@@ -33,36 +35,46 @@ function App() {
           />
 
           {/* Dashboard Médecin (protégé) */}
+          <Route
+            path="/medecin"
+            element={
+              <PrivateRoute allowedRoles={['Medecin']}>
+                <MedecinDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/medecin/create-dossier"
+            element={
+              <PrivateRoute allowedRoles={['Medecin']}>
+                <CreateDossier />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/medecin/mes-dossiers"
+            element={
+              <PrivateRoute allowedRoles={['Medecin']}>
+                <MesDossiers />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Pages Patient (protégé) */}
          <Route
-  path="/medecin"
+  path="/patient/dashboard"
   element={
-    <PrivateRoute allowedRoles={['Medecin']}>
-      <DoctorDashboard />
+    <PrivateRoute allowedRoles={['Patient']}>
+      <PatientDashboard />
     </PrivateRoute>
   }
-/>
+>
+  <Route index element={""} />
+  <Route path="mes-dossiers" element={<MyDossiers />} />
+</Route>
 
-          {/* Dashboard Patient (protégé) */}
-          <Route
-            path="/patient"
-            element={
-              <PrivateRoute allowedRoles={['Patient']}>
-                <PatientDashboard />
-              </PrivateRoute>
-            }
-          />
- 
-          {/* Mes Dossiers (protégé pour les patients) */}
-          <Route
-            path="/mes-dossiers"
-            element={
-              <PrivateRoute allowedRoles={['Patient']}>
-                <MyDossiers />
-              </PrivateRoute>
-            }
-          />
           {/* Redirection par défaut */}
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
       <Footer />

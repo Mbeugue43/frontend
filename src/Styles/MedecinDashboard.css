@@ -1,0 +1,63 @@
+/* =======================
+   Dashboard global
+======================= */
+.MedecinDashboard {
+  padding: 50px 30px 30px 30px; /* plus de padding en haut */
+  background-color: #e6f4f1; /* couleur douce */
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Texte intro */
+.MedecinDashboard p {
+  font-size: 1.2rem;
+  color: #374151; /* gris foncé */
+  margin-bottom: 20px; /* plus d'espace avant le titre */
+  text-align: center;
+  margin-top: 20px; /* espace du haut pour le texte */
+}
+
+/* Titre principal */
+.MedecinDashboard h1 {
+  margin-bottom: 32px;
+  color: #111827;
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Menu de navigation */
+.MedecinDashboard nav {
+  display: flex;
+  gap: 20px; /* espace entre les liens */
+  padding: 20px 25px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  flex-wrap: wrap; /* s'adapte aux écrans petits */
+  justify-content: center;
+}
+
+/* Liens dans le menu */
+.MedecinDashboard nav a {
+  color: #10b981; /* vert accent */
+  text-decoration: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: #f0fdf4; /* fond léger pour les boutons */
+}
+
+/* Hover effect */
+.MedecinDashboard nav a:hover {
+  background-color: #34d399; /* vert plus foncé */
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
